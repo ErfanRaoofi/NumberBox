@@ -1,6 +1,6 @@
 import { Component, Input, ViewChild, ElementRef } from "@angular/core";
 import { Observable, Subject } from "rxjs";
-import { debounceTime, distinctUntilChanged} from "rxjs/operators";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
 @Component({
   selector: "app-num",
@@ -53,11 +53,11 @@ export class NumComponent {
     }
 
     if (this.cursorPosition <= 0) {
+      if (!pat.test(inputChar)) {
+        event.preventDefault();
+      }
       if (this.value.match(/\-/g)) {
         event.preventDefault();
-        if (!pat.test(inputChar)) {
-          event.preventDefault();
-        }
       }
     }
     if (this.cursorPosition !== 0) {
@@ -83,6 +83,14 @@ export class NumComponent {
   }
 
   handleKeyUp(event: any) {
+    // up & down button
+    if (event.keyCode === 38) {
+      this.process();
+    }
+    if (event.keyCode === 40) {
+      this.process();
+    }
+
     // left & right Button
     if (event.keyCode === 37 || event.keyCode === 39) {
       if (
@@ -92,7 +100,6 @@ export class NumComponent {
         this.cursorPosition = this.input.nativeElement.selectionStart;
       }
     }
-
     // home button
     if (event.keyCode === 36) {
       this.cursorPosition = 0;
@@ -110,11 +117,11 @@ export class NumComponent {
         this.cursorPosition = 0;
       }
     }
+
     this.dotPosition = this.value.indexOf(".") + 1;
-    console.log(this.dotPosition);
     if (this.value.match(/\./g)) {
       if (this.dotPosition > this.cursorPosition) {
-        this.cursorPosition -= 1;
+        // this.cursorPosition -= 1;
         if (event.keyCode === 40) {
           this.tmp = +this.value;
           this.count = +this.tmp - this.intStep;
@@ -141,12 +148,14 @@ export class NumComponent {
       }
     } else {
       if (event.keyCode === 40) {
+        console.log("40");
         this.tmp = +this.value;
         this.count = +this.tmp - this.intStep;
         this.value = this.count.toString();
       }
 
       if (event.keyCode === 38) {
+        console.log("38");
         this.tmp = this.value;
         this.count = +this.tmp + this.intStep;
         this.value = this.count.toString();
@@ -174,12 +183,38 @@ export class NumComponent {
   }
 
   checkMinMax(text) {
-    console.log("submit", text);
     if (+text < this.min) {
       this.value = "";
     }
     if (+text > this.max) {
       this.value = "";
     }
+  }
+
+  doGetCaretPosition(ctrl) {
+    let CaretPos = 0;
+    if (ctrl.selectionStart || ctrl.selectionStart === 0) {
+      CaretPos = ctrl.selectionStart;
+      return CaretPos;
+    }
+  }
+
+  setCaretPosition(ctrl, pos) {
+    if (ctrl.setSelectionRange) {
+      ctrl.focus();
+      ctrl.setSelectionRange(pos, pos);
+    } else if (ctrl.createTextRange) {
+      const range = ctrl.createTextRange();
+      range.collapse(true);
+      range.moveEnd("character", pos);
+      range.moveStart("character", pos);
+      range.select();
+    }
+  }
+
+  process() {
+    let no = this.cursorPosition;
+    let yes = document.getElementById("get");
+    this.setCaretPosition(yes, no);
   }
 }
