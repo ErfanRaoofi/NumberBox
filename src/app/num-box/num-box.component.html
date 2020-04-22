@@ -1,0 +1,7 @@
+<input 
+[(ngModel)] = "tempNum" 
+type="text" 
+(keypress)="keyPress($event)" 
+maxlength="{{maxLength}}" 
+minlength="{{minLength}}"
+(keyup)="keyDown($event)">

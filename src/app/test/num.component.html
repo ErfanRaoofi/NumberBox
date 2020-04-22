@@ -1,0 +1,8 @@
+<input #input 
+[(ngModel)]="value" 
+type="text" 
+(keypress)="handleKeyPress($event)"
+(keyup)="handleKeyUp($event)" 
+(ngModelChange)="this.userQuestionUpdate.next($event)"
+(keydown)="handleKeyDown($event)" 
+(click)="handleClick()">
