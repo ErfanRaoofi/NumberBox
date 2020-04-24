@@ -183,11 +183,15 @@ export class NumComponent {
   }
 
   checkMinMax(text) {
-    if (+text < this.min) {
-      this.value = "";
+    if (this.min !== null) {
+      if (+text < this.min) {
+        this.value = "";
+      }
     }
-    if (+text > this.max) {
-      this.value = "";
+    if (this.max !== null) {
+      if (+text > this.max) {
+        this.value = "";
+      }
     }
   }
 
