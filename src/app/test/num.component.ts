@@ -87,7 +87,6 @@ export class NumComponent {
   }
 
   handleKeyUp(event: any) {
-   
     // up & down button
     if (event.keyCode === 38) {
       this.setCaret();
@@ -130,7 +129,6 @@ export class NumComponent {
         this.cursorPosition -= 1;
       }
     }
-   
   }
 
   handleKeyDown(event: any) {
