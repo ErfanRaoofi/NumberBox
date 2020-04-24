@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NumBoxModule } from './num-box/num-box.module';
 import { NumModule } from './test/num.module';
+import { TimePickerModule } from './time-picker/time-picker.module';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { NumModule } from './test/num.module';
     BrowserModule,
     AppRoutingModule,
     NumBoxModule,
-    NumModule
+    NumModule,
+    TimePickerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
