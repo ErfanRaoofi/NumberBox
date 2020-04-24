@@ -1,10 +1,5 @@
-<input 
-#input 
-id='get'
-[(ngModel)]="value" 
-type="text" 
-(keypress)="handleKeyPress($event)"
-(ngModelChange)="this.userQuestionUpdate.next($event)"
-(keydown)="handleKeyDown($event)" 
-(click)="handleClick()"
-(keyup)="handleKeyUp($event)">
+<input #input id='value' [(ngModel)]="value" type="text" (keypress)="handleKeyPress($event)" (ngModelChange)="this.userQuestionUpdate.next($event)" (keydown)="handleKeyDown($event)" (click)="handleClick()" (keyup)="handleKeyUp($event)">
+
+<button (click)="handleUpButton()">up</button>
+<button (click)="handleDownButton()">down</button>
+<!-- <input type="number"> -->

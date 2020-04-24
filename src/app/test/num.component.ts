@@ -20,8 +20,6 @@ export class NumComponent {
 
   count: number;
 
-  @Input() floatCount: number = 2;
-
   findDots: boolean = false;
   findMinus: boolean = false;
 
@@ -29,6 +27,7 @@ export class NumComponent {
 
   dotPosition;
 
+  @Input() floatCount: number = 2;
   @Input() intStep: number = 1;
   @Input() floatStep: number = 0.1;
 
@@ -50,9 +49,10 @@ export class NumComponent {
       this.input.nativeElement.selectionStart === 0
     ) {
       this.cursorPosition = this.input.nativeElement.selectionStart;
+      this.cursorPosition += 1;
     }
 
-    if (this.cursorPosition <= 0) {
+    if (this.cursorPosition <= 1) {
       if (!pat.test(inputChar)) {
         event.preventDefault();
       }
@@ -60,11 +60,15 @@ export class NumComponent {
         event.preventDefault();
       }
     }
-    if (this.cursorPosition !== 0) {
+    if (this.cursorPosition !== 1) {
       if (event.keyCode !== 8 && !pattern.test(inputChar)) {
         event.preventDefault();
       } else {
         if (inputChar === ".") {
+          const lastChar = this.value.charAt(this.value.length - 1);
+          if (lastChar.match(/\-/g)) {
+            event.preventDefault();
+          }
           if (this.findDots) {
             event.preventDefault();
           }
@@ -83,14 +87,18 @@ export class NumComponent {
   }
 
   handleKeyUp(event: any) {
+   
     // up & down button
     if (event.keyCode === 38) {
-      this.process();
+      this.setCaret();
     }
     if (event.keyCode === 40) {
-      this.process();
+      this.setCaret();
     }
-
+    if (event.which === 38 || event.which === 40) {
+      event.preventDefault();
+      return false;
+    }
     // left & right Button
     if (event.keyCode === 37 || event.keyCode === 39) {
       if (
@@ -100,24 +108,33 @@ export class NumComponent {
         this.cursorPosition = this.input.nativeElement.selectionStart;
       }
     }
+
     // home button
     if (event.keyCode === 36) {
       this.cursorPosition = 0;
     }
-    this.delaySearch(event);
-  }
 
-  handleKeyDown(event: any) {
+    // end button
     if (event.keyCode === 35) {
       this.cursorPosition = this.value.length;
     }
 
+    // set delay with rxjs
+    this.delaySearch(event);
+
+    // backspace Control
     if (event.keyCode === 8) {
-      if (this.cursorPosition > 0) {
+      if (this.value.length <= 0) {
         this.cursorPosition = 0;
+      } else {
+        this.cursorPosition -= 1;
       }
     }
+   
+  }
 
+  handleKeyDown(event: any) {
+    // step and +- with up key and down key
     this.dotPosition = this.value.indexOf(".") + 1;
     if (this.value.match(/\./g)) {
       if (this.dotPosition > this.cursorPosition) {
@@ -148,18 +165,22 @@ export class NumComponent {
       }
     } else {
       if (event.keyCode === 40) {
-        console.log("40");
         this.tmp = +this.value;
         this.count = +this.tmp - this.intStep;
         this.value = this.count.toString();
       }
 
       if (event.keyCode === 38) {
-        console.log("38");
         this.tmp = this.value;
         this.count = +this.tmp + this.intStep;
         this.value = this.count.toString();
       }
+    }
+
+    // stop when keydown
+    if (event.which === 38 || event.which === 40) {
+      event.preventDefault();
+      return false;
     }
   }
 
@@ -216,9 +237,49 @@ export class NumComponent {
     }
   }
 
-  process() {
-    let no = this.cursorPosition;
-    let yes = document.getElementById("get");
-    this.setCaretPosition(yes, no);
+  setCaret() {
+    const getElement = document.getElementById("value");
+    this.setCaretPosition(getElement, this.cursorPosition);
+  }
+
+  handleUpButton() {
+    this.dotPosition = this.value.indexOf(".") + 1;
+    if (this.value.match(/\./g)) {
+      if (this.dotPosition > this.cursorPosition) {
+        // this.cursorPosition -= 1;
+
+        this.tmp = this.value;
+        this.count = +this.tmp + this.intStep;
+        this.value = this.count.toFixed(this.floatCount);
+      } else {
+        this.tmp = this.value;
+        this.count = +this.tmp + this.floatStep;
+        this.value = this.count.toFixed(this.floatCount);
+      }
+    } else {
+      this.tmp = this.value;
+      this.count = +this.tmp + this.intStep;
+      this.value = this.count.toString();
+    }
+  }
+
+  handleDownButton() {
+    this.dotPosition = this.value.indexOf(".") + 1;
+    if (this.value.match(/\./g)) {
+      if (this.dotPosition > this.cursorPosition) {
+        // this.cursorPosition -= 1;
+        this.tmp = +this.value;
+        this.count = +this.tmp - this.intStep;
+        this.value = this.count.toFixed(this.floatCount);
+      } else {
+        this.tmp = +this.value;
+        this.count = +this.tmp - this.floatStep;
+        this.value = this.count.toFixed(this.floatCount);
+      }
+    } else {
+      this.tmp = +this.value;
+      this.count = +this.tmp - this.intStep;
+      this.value = this.count.toString();
+    }
   }
 }
