@@ -6,6 +6,8 @@ import { Subject } from "rxjs";
   templateUrl: "time-picker.component.html",
 })
 export class TimePickerComponent implements OnInit {
+  timeMask = [/[0-2]/, /[0-9]/, ":", /[0-5]/, /[0-9]/, ":", /[0-5]/, /[0-9]/];
+
   @ViewChild("input") input: ElementRef<HTMLInputElement>;
 
   @Input() min: number = null;
@@ -19,54 +21,34 @@ export class TimePickerComponent implements OnInit {
 
   count: number;
 
-  findDots: boolean = false;
+  findColon: boolean = false;
   findMinus: boolean = false;
 
   cursorPosition: number = 0;
 
-  dotPosition;
+  ColonPosition;
 
-  @Input() floatCount: number = 2;
   @Input() intStep: number = 1;
-  @Input() floatStep: number = 0.1;
   constructor() {}
 
   ngOnInit() {}
 
   handleKeyPress(event: any) {
-    const pattern = /[0-9\:]/g;
-    const pat = /[0-9\-]/g;
+    const pattern = /^[0-9\:]$/g;
 
     const inputChar = String.fromCharCode(event.charCode);
+    const firstChar = this.value.charAt(this.value.length - 8);
+    const secondChar = this.value.charAt(this.value.length - 7);
 
-    if (this.value.match(/\:/g) === null) {
-      this.findDots = false;
-    }
-    if (this.value.search("-") === null) {
-      this.findMinus = false;
-    }
-    if (this.cursorPosition !== 0) {
-      if (event.keyCode !== 8 && !pattern.test(inputChar)) {
-        event.preventDefault();
-      } else {
-        if (inputChar === ":") {
-          const lastChar = this.value.charAt(this.value.length - 1);
-          if (lastChar.match(/\-/g)) {
+    if (event.keyCode !== 8 && !pattern.test(inputChar)) {
+      event.preventDefault();
+    } else {
+      if (firstChar === "2") {
+        if (secondChar === "_") {
+          if (inputChar >= "4") {
             event.preventDefault();
           }
-          if (this.findDots) {
-            event.preventDefault();
-          }
-          this.findDots = true;
-          this.findMinus = true;
         }
-      }
-
-      if (inputChar === "-") {
-        if (this.findMinus) {
-          event.preventDefault();
-        }
-        this.findMinus = true;
       }
     }
   }

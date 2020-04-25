@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ElementRef } from "@angular/core";
+import { Component, Input, ViewChild, ElementRef, HostListener } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
@@ -89,15 +89,20 @@ export class NumComponent {
   handleKeyUp(event: any) {
     // up & down button
     if (event.keyCode === 38) {
-      this.setCaret();
+      setTimeout(() => {
+        this.setCaret();
+      }, 300);
     }
     if (event.keyCode === 40) {
-      this.setCaret();
+      setTimeout(() => {
+        this.setCaret();
+      }, 300);
     }
     if (event.which === 38 || event.which === 40) {
       event.preventDefault();
       return false;
     }
+
     // left & right Button
     if (event.keyCode === 37 || event.keyCode === 39) {
       if (
@@ -131,7 +136,7 @@ export class NumComponent {
     }
   }
 
-  handleKeyDown(event: any) {
+  handleKeyDown(event: KeyboardEvent) {
     // step and +- with up key and down key
     this.dotPosition = this.value.indexOf(".") + 1;
     if (this.value.match(/\./g)) {
@@ -178,6 +183,7 @@ export class NumComponent {
     // stop when keydown
     if (event.which === 38 || event.which === 40) {
       event.preventDefault();
+      event.stopPropagation();
       return false;
     }
   }
@@ -245,7 +251,6 @@ export class NumComponent {
     if (this.value.match(/\./g)) {
       if (this.dotPosition > this.cursorPosition) {
         // this.cursorPosition -= 1;
-
         this.tmp = this.value;
         this.count = +this.tmp + this.intStep;
         this.value = this.count.toFixed(this.floatCount);
