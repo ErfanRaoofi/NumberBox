@@ -1,4 +1,10 @@
-import { Component, Input, ViewChild, ElementRef, HostListener } from "@angular/core";
+import {
+  Component,
+  Input,
+  ViewChild,
+  ElementRef,
+  HostListener,
+} from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
@@ -27,9 +33,14 @@ export class NumComponent {
 
   dotPosition;
 
-  @Input() floatCount: number = 2;
+  @Input() floatCount: number = 1;
   @Input() intStep: number = 1;
   @Input() floatStep: number = 0.1;
+
+  @Input() decimalNumber: number = null;
+  @Input() decimalConstant: number = 0.1;
+  @Input() customStep: number = null;
+  @Input() lastStep: number = null;
 
   handleKeyPress(event: any) {
     const pattern = /[0-9\.]/g;
@@ -44,6 +55,7 @@ export class NumComponent {
       this.findMinus = false;
     }
 
+    // get cursur position when key press
     if (
       this.input.nativeElement.selectionStart ||
       this.input.nativeElement.selectionStart === 0
@@ -52,6 +64,7 @@ export class NumComponent {
       this.cursorPosition += 1;
     }
 
+    // control cursor when in first Index
     if (this.cursorPosition <= 1) {
       if (!pat.test(inputChar)) {
         event.preventDefault();
@@ -60,28 +73,43 @@ export class NumComponent {
         event.preventDefault();
       }
     }
+    // control cursor when in another index
     if (this.cursorPosition !== 1) {
       if (event.keyCode !== 8 && !pattern.test(inputChar)) {
         event.preventDefault();
       } else {
+        // for contor decimal figur = 0 or null
+        if (this.decimalNumber === null || this.decimalNumber === 0) {
+          if (inputChar === ".") {
+            event.preventDefault();
+          }
+        }
+        // control decimal number (figur of decimal)
+        if (this.value.match(/\./g)) {
+          const figureAfterDot = this.value.length - this.value.indexOf(".");
+          const dotIndex = this.value.indexOf(".");
+          if (
+            dotIndex - 1 + dotIndex + figureAfterDot >
+              dotIndex - 1 + dotIndex + this.decimalNumber &&
+            this.cursorPosition > dotIndex
+          ) {
+            event.preventDefault();
+          }
+        }
+        // control '.' input
         if (inputChar === ".") {
           const lastChar = this.value.charAt(this.value.length - 1);
+          // control . when last char is -
           if (lastChar.match(/\-/g)) {
             event.preventDefault();
           }
+          // control . when find first dot
           if (this.findDots) {
             event.preventDefault();
           }
           this.findDots = true;
           this.findMinus = true;
         }
-      }
-
-      if (inputChar === "-") {
-        if (this.findMinus) {
-          event.preventDefault();
-        }
-        this.findMinus = true;
       }
     }
   }
@@ -137,33 +165,58 @@ export class NumComponent {
   }
 
   handleKeyDown(event: KeyboardEvent) {
+    const defaultStep: number = Math.pow(
+      this.decimalConstant,
+      this.decimalNumber
+    );
     // step and +- with up key and down key
     this.dotPosition = this.value.indexOf(".") + 1;
     if (this.value.match(/\./g)) {
       if (this.dotPosition > this.cursorPosition) {
         // this.cursorPosition -= 1;
         if (event.keyCode === 40) {
-          this.tmp = +this.value;
-          this.count = +this.tmp - this.intStep;
-          this.value = this.count.toFixed(this.floatCount);
+          this.tmp = parseFloat(this.value);
+          this.count = parseFloat(this.value) - this.intStep;
+          this.value = this.count.toFixed(this.decimalNumber);
         }
 
         if (event.keyCode === 38) {
-          this.tmp = this.value;
-          this.count = +this.tmp + this.intStep;
-          this.value = this.count.toFixed(this.floatCount);
+          this.tmp = parseFloat(this.value);
+          this.count = parseFloat(this.value) + this.intStep;
+          this.value = this.count.toFixed(this.decimalNumber);
         }
       } else {
+        // this.cursorPosition += 1;
         if (event.keyCode === 40) {
-          this.tmp = +this.value;
-          this.count = +this.tmp - this.floatStep;
-          this.value = this.count.toFixed(this.floatCount);
+          if (this.customStep !== null) {
+            this.tmp = parseFloat(this.value);
+            this.lastStep =
+              parseFloat(defaultStep.toFixed(this.decimalNumber)) +
+              parseFloat(this.customStep.toFixed(this.decimalNumber)) -
+              parseFloat(defaultStep.toFixed(this.decimalNumber));
+            this.count = parseFloat(this.tmp) - this.lastStep;
+            this.value = this.count.toFixed(this.decimalNumber);
+          } else {
+            this.tmp = parseFloat(this.value);
+            this.count = parseFloat(this.tmp) - defaultStep;
+            this.value = this.count.toFixed(this.decimalNumber);
+          }
         }
 
         if (event.keyCode === 38) {
-          this.tmp = this.value;
-          this.count = +this.tmp + this.floatStep;
-          this.value = this.count.toFixed(this.floatCount);
+          if (this.customStep !== null) {
+            this.tmp = parseFloat(this.value);
+            this.lastStep =
+              parseFloat(defaultStep.toFixed(this.decimalNumber)) +
+              parseFloat(this.customStep.toFixed(this.decimalNumber)) -
+              parseFloat(defaultStep.toFixed(this.decimalNumber));
+            this.count = parseFloat(this.tmp) + this.lastStep;
+            this.value = this.count.toFixed(this.decimalNumber);
+          } else {
+            this.tmp = parseFloat(this.value);
+            this.count = parseFloat(this.tmp) + defaultStep;
+            this.value = this.count.toFixed(this.decimalNumber);
+          }
         }
       }
     } else {
@@ -242,7 +295,7 @@ export class NumComponent {
   }
 
   setCaret() {
-    const getElement = document.getElementById("value");
+    const getElement = document.getElementById("NumberBoxValue");
     this.setCaretPosition(getElement, this.cursorPosition);
   }
 

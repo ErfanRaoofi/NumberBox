@@ -1,1 +1,1 @@
-<input #input [textMask]="{mask: timeMask}" type="text" [(ngModel)]="value" (keypress)='handleKeyPress($event)'>
+<input #input id="value2" [textMask]="HhMmSs" type="text" [(ngModel)]="value" (keypress)='handleKeyPress($event)' (keyup)="handleKeyUp($event)" (keydown)="handleKeyDown($event)" (click)="handleClick($event)">
