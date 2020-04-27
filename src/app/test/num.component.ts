@@ -7,6 +7,7 @@ import {
 } from "@angular/core";
 import { Observable, Subject } from "rxjs";
 import { debounceTime, distinctUntilChanged } from "rxjs/operators";
+import { ThrowStmt } from "@angular/compiler";
 
 @Component({
   selector: "app-num",
@@ -32,6 +33,8 @@ export class NumComponent {
   cursorPosition: number = 0;
 
   dotPosition;
+
+  oldCursorPosition: number = 0;
 
   @Input() floatCount: number = 1;
   @Input() intStep: number = 1;
@@ -91,7 +94,7 @@ export class NumComponent {
           if (
             dotIndex - 1 + dotIndex + figureAfterDot >
               dotIndex - 1 + dotIndex + this.decimalNumber &&
-            this.cursorPosition > dotIndex
+            this.cursorPosition - 1 > dotIndex
           ) {
             event.preventDefault();
           }
@@ -115,16 +118,33 @@ export class NumComponent {
   }
 
   handleKeyUp(event: any) {
+    debugger;
+    this.oldCursorPosition = this.value.search(/\./g);
     // up & down button
     if (event.keyCode === 38) {
-      setTimeout(() => {
-        this.setCaret();
-      }, 300);
+      // if( this.value[this.value.search(/\./g) - 1] === '0'){
+      //   this.cursorPosition = this.cursorPosition +1;
+      // }
+      if (
+        this.cursorPosition < this.value.search(/\./g) ||
+        this.oldCursorPosition === this.cursorPosition - 1
+      ) {
+        this.cursorPosition = this.value.search(/\./g);
+      }
+      this.setCaret();
     }
+
     if (event.keyCode === 40) {
-      setTimeout(() => {
-        this.setCaret();
-      }, 300);
+      // if( this.value[this.value.search(/\./g) - 1] === '9' && this.value.search(/\./g)){
+      //   this.cursorPosition = this.cursorPosition -1;
+      // }
+      if (
+        this.cursorPosition < this.value.search(/\./g) ||
+        this.oldCursorPosition === this.cursorPosition - 1
+      ) {
+        this.cursorPosition = this.value.search(/\./g);
+      }
+      this.setCaret();
     }
     if (event.which === 38 || event.which === 40) {
       event.preventDefault();
@@ -170,9 +190,9 @@ export class NumComponent {
       this.decimalNumber
     );
     // step and +- with up key and down key
-    this.dotPosition = this.value.indexOf(".") + 1;
+    this.dotPosition = this.value.indexOf(".");
     if (this.value.match(/\./g)) {
-      if (this.dotPosition > this.cursorPosition) {
+      if (this.dotPosition >= this.cursorPosition) {
         // this.cursorPosition -= 1;
         if (event.keyCode === 40) {
           this.tmp = parseFloat(this.value);
@@ -296,21 +316,36 @@ export class NumComponent {
 
   setCaret() {
     const getElement = document.getElementById("NumberBoxValue");
+
     this.setCaretPosition(getElement, this.cursorPosition);
   }
 
   handleUpButton() {
+    const defaultStep: number = Math.pow(
+      this.decimalConstant,
+      this.decimalNumber
+    );
     this.dotPosition = this.value.indexOf(".") + 1;
     if (this.value.match(/\./g)) {
       if (this.dotPosition > this.cursorPosition) {
         // this.cursorPosition -= 1;
-        this.tmp = this.value;
-        this.count = +this.tmp + this.intStep;
-        this.value = this.count.toFixed(this.floatCount);
+        this.tmp = parseFloat(this.value);
+        this.count = parseFloat(this.value) + this.intStep;
+        this.value = this.count.toFixed(this.decimalNumber);
       } else {
-        this.tmp = this.value;
-        this.count = +this.tmp + this.floatStep;
-        this.value = this.count.toFixed(this.floatCount);
+        if (this.customStep !== null) {
+          this.tmp = parseFloat(this.value);
+          this.lastStep =
+            parseFloat(defaultStep.toFixed(this.decimalNumber)) +
+            parseFloat(this.customStep.toFixed(this.decimalNumber)) -
+            parseFloat(defaultStep.toFixed(this.decimalNumber));
+          this.count = parseFloat(this.tmp) + this.lastStep;
+          this.value = this.count.toFixed(this.decimalNumber);
+        } else {
+          this.tmp = parseFloat(this.value);
+          this.count = parseFloat(this.tmp) + defaultStep;
+          this.value = this.count.toFixed(this.decimalNumber);
+        }
       }
     } else {
       this.tmp = this.value;
@@ -320,17 +355,31 @@ export class NumComponent {
   }
 
   handleDownButton() {
+    const defaultStep: number = Math.pow(
+      this.decimalConstant,
+      this.decimalNumber
+    );
     this.dotPosition = this.value.indexOf(".") + 1;
     if (this.value.match(/\./g)) {
       if (this.dotPosition > this.cursorPosition) {
         // this.cursorPosition -= 1;
-        this.tmp = +this.value;
-        this.count = +this.tmp - this.intStep;
-        this.value = this.count.toFixed(this.floatCount);
+        this.tmp = parseFloat(this.value);
+        this.count = parseFloat(this.value) - this.intStep;
+        this.value = this.count.toFixed(this.decimalNumber);
       } else {
-        this.tmp = +this.value;
-        this.count = +this.tmp - this.floatStep;
-        this.value = this.count.toFixed(this.floatCount);
+        if (this.customStep !== null) {
+          this.tmp = parseFloat(this.value);
+          this.lastStep =
+            parseFloat(defaultStep.toFixed(this.decimalNumber)) +
+            parseFloat(this.customStep.toFixed(this.decimalNumber)) -
+            parseFloat(defaultStep.toFixed(this.decimalNumber));
+          this.count = parseFloat(this.tmp) - this.lastStep;
+          this.value = this.count.toFixed(this.decimalNumber);
+        } else {
+          this.tmp = parseFloat(this.value);
+          this.count = parseFloat(this.tmp) - defaultStep;
+          this.value = this.count.toFixed(this.decimalNumber);
+        }
       }
     } else {
       this.tmp = +this.value;
