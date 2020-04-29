@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 
-import { TimePickerComponent } from './time-picker.conponent';
+import { TimePickerComponent } from './time-picker.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TextMaskModule } from 'angular2-text-mask';

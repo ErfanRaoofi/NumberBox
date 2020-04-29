@@ -21,7 +21,7 @@ export class NumComponent {
 
   userQuestionUpdate = new Subject<string>();
 
-  value: string = "";
+  // value: string = "";
 
   tmp: any;
 
@@ -34,8 +34,6 @@ export class NumComponent {
 
   dotPosition;
 
-  oldCursorPosition: number = 0;
-
   @Input() floatCount: number = 1;
   @Input() intStep: number = 1;
   @Input() floatStep: number = 0.1;
@@ -45,16 +43,34 @@ export class NumComponent {
   @Input() customStep: number = null;
   @Input() lastStep: number = null;
 
+  private _value: string;
+  public get value(): string {
+    return this._value;
+  }
+  public set value(v: string) {
+    if (this._value) {
+      const old = this._value;
+      if (old.search(/\./g) !== v.search(/\./g)) {
+        if (this.cursorPosition <= old.search(/\./g)) {
+          this.cursorPosition = v.search(/\./g);
+        } else {
+          this.cursorPosition = v.length;
+        }
+      }
+    }
+    this._value = v;
+  }
+
   handleKeyPress(event: any) {
     const pattern = /[0-9\.]/g;
     const pat = /[0-9\-]/g;
 
     const inputChar = String.fromCharCode(event.charCode);
 
-    if (this.value.match(/\./g) === null) {
+    if (this.value && this.value.match(/\./g) === null) {
       this.findDots = false;
     }
-    if (this.value.search("-") === null) {
+    if (this.value && this.value.search("-") === null) {
       this.findMinus = false;
     }
 
@@ -72,7 +88,7 @@ export class NumComponent {
       if (!pat.test(inputChar)) {
         event.preventDefault();
       }
-      if (this.value.match(/\-/g)) {
+      if (this.value && this.value.match(/\-/g)) {
         event.preventDefault();
       }
     }
@@ -88,7 +104,7 @@ export class NumComponent {
           }
         }
         // control decimal number (figur of decimal)
-        if (this.value.match(/\./g)) {
+        if (this.value && this.value.match(/\./g)) {
           const figureAfterDot = this.value.length - this.value.indexOf(".");
           const dotIndex = this.value.indexOf(".");
           if (
@@ -118,37 +134,18 @@ export class NumComponent {
   }
 
   handleKeyUp(event: any) {
-    debugger;
-    this.oldCursorPosition = this.value.search(/\./g);
-    // up & down button
+    if (event.which === 38 || event.which === 40) {
+      document.getElementById("NumberBoxValue").style.caretColor = "black";
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
     if (event.keyCode === 38) {
-      // if( this.value[this.value.search(/\./g) - 1] === '0'){
-      //   this.cursorPosition = this.cursorPosition +1;
-      // }
-      if (
-        this.cursorPosition < this.value.search(/\./g) ||
-        this.oldCursorPosition === this.cursorPosition - 1
-      ) {
-        this.cursorPosition = this.value.search(/\./g);
-      }
       this.setCaret();
     }
 
     if (event.keyCode === 40) {
-      // if( this.value[this.value.search(/\./g) - 1] === '9' && this.value.search(/\./g)){
-      //   this.cursorPosition = this.cursorPosition -1;
-      // }
-      if (
-        this.cursorPosition < this.value.search(/\./g) ||
-        this.oldCursorPosition === this.cursorPosition - 1
-      ) {
-        this.cursorPosition = this.value.search(/\./g);
-      }
       this.setCaret();
-    }
-    if (event.which === 38 || event.which === 40) {
-      event.preventDefault();
-      return false;
     }
 
     // left & right Button
@@ -185,15 +182,18 @@ export class NumComponent {
   }
 
   handleKeyDown(event: KeyboardEvent) {
+    if (event.which === 38 || event.which === 40) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     const defaultStep: number = Math.pow(
       this.decimalConstant,
       this.decimalNumber
     );
     // step and +- with up key and down key
-    this.dotPosition = this.value.indexOf(".");
-    if (this.value.match(/\./g)) {
+    if (this.value && this.value.match(/\./g)) {
+      this.dotPosition = this.value.indexOf(".");
       if (this.dotPosition >= this.cursorPosition) {
-        // this.cursorPosition -= 1;
         if (event.keyCode === 40) {
           this.tmp = parseFloat(this.value);
           this.count = parseFloat(this.value) - this.intStep;
@@ -206,7 +206,6 @@ export class NumComponent {
           this.value = this.count.toFixed(this.decimalNumber);
         }
       } else {
-        // this.cursorPosition += 1;
         if (event.keyCode === 40) {
           if (this.customStep !== null) {
             this.tmp = parseFloat(this.value);
@@ -255,6 +254,8 @@ export class NumComponent {
 
     // stop when keydown
     if (event.which === 38 || event.which === 40) {
+      document.getElementById("NumberBoxValue").style.caretColor =
+        "transparent";
       event.preventDefault();
       event.stopPropagation();
       return false;
@@ -316,19 +317,17 @@ export class NumComponent {
 
   setCaret() {
     const getElement = document.getElementById("NumberBoxValue");
-
     this.setCaretPosition(getElement, this.cursorPosition);
   }
 
-  handleUpButton() {
+  upStepHandel() {
     const defaultStep: number = Math.pow(
       this.decimalConstant,
       this.decimalNumber
     );
     this.dotPosition = this.value.indexOf(".") + 1;
-    if (this.value.match(/\./g)) {
+    if (this.value && this.value.match(/\./g)) {
       if (this.dotPosition > this.cursorPosition) {
-        // this.cursorPosition -= 1;
         this.tmp = parseFloat(this.value);
         this.count = parseFloat(this.value) + this.intStep;
         this.value = this.count.toFixed(this.decimalNumber);
@@ -354,15 +353,14 @@ export class NumComponent {
     }
   }
 
-  handleDownButton() {
+  downStepHandel() {
     const defaultStep: number = Math.pow(
       this.decimalConstant,
       this.decimalNumber
     );
     this.dotPosition = this.value.indexOf(".") + 1;
-    if (this.value.match(/\./g)) {
+    if (this.value && this.value.match(/\./g)) {
       if (this.dotPosition > this.cursorPosition) {
-        // this.cursorPosition -= 1;
         this.tmp = parseFloat(this.value);
         this.count = parseFloat(this.value) - this.intStep;
         this.value = this.count.toFixed(this.decimalNumber);
@@ -385,6 +383,39 @@ export class NumComponent {
       this.tmp = +this.value;
       this.count = +this.tmp - this.intStep;
       this.value = this.count.toString();
+    }
+  }
+
+  handleUpButton() {
+    this.upStepHandel();
+  }
+
+  handleDownButton() {
+    this.downStepHandel();
+  }
+
+  @HostListener("mousewheel", ["$event"]) onMousewheel(event) {
+    if (event.wheelDelta > 0) {
+      document.getElementById("NumberBoxValue").style.caretColor =
+        "transparent";
+
+      this.upStepHandel();
+
+      setTimeout(() => {
+        this.setCaret();
+        document.getElementById("NumberBoxValue").style.caretColor = "black";
+      }, 0);
+    }
+    if (event.wheelDelta < 0) {
+      document.getElementById("NumberBoxValue").style.caretColor =
+        "transparent";
+
+      this.downStepHandel();
+
+      setTimeout(() => {
+        this.setCaret();
+        document.getElementById("NumberBoxValue").style.caretColor = "black";
+      }, 0);
     }
   }
 }
