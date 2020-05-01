@@ -240,15 +240,23 @@ export class NumComponent {
       }
     } else {
       if (event.keyCode === 40) {
-        this.tmp = +this.value;
-        this.count = +this.tmp - this.intStep;
-        this.value = this.count.toString();
+        if (this.value == null) {
+          this.value = "0";
+        } else {
+          this.tmp = +this.value;
+          this.count = +this.tmp - this.intStep;
+          this.value = this.count.toString();
+        }
       }
 
       if (event.keyCode === 38) {
-        this.tmp = this.value;
-        this.count = +this.tmp + this.intStep;
-        this.value = this.count.toString();
+        if (this.value == null) {
+          this.value = "0";
+        } else {
+          this.tmp = this.value;
+          this.count = +this.tmp + this.intStep;
+          this.value = this.count.toString();
+        }
       }
     }
 
@@ -321,68 +329,76 @@ export class NumComponent {
   }
 
   upStepHandel() {
-    const defaultStep: number = Math.pow(
-      this.decimalConstant,
-      this.decimalNumber
-    );
-    this.dotPosition = this.value.indexOf(".") + 1;
-    if (this.value && this.value.match(/\./g)) {
-      if (this.dotPosition > this.cursorPosition) {
-        this.tmp = parseFloat(this.value);
-        this.count = parseFloat(this.value) + this.intStep;
-        this.value = this.count.toFixed(this.decimalNumber);
-      } else {
-        if (this.customStep !== null) {
+    if (this.value == null) {
+      this.value = "0";
+    } else {
+      const defaultStep: number = Math.pow(
+        this.decimalConstant,
+        this.decimalNumber
+      );
+      this.dotPosition = this.value.indexOf(".") + 1;
+      if (this.value && this.value.match(/\./g)) {
+        if (this.dotPosition > this.cursorPosition) {
           this.tmp = parseFloat(this.value);
-          this.lastStep =
-            parseFloat(defaultStep.toFixed(this.decimalNumber)) +
-            parseFloat(this.customStep.toFixed(this.decimalNumber)) -
-            parseFloat(defaultStep.toFixed(this.decimalNumber));
-          this.count = parseFloat(this.tmp) + this.lastStep;
+          this.count = parseFloat(this.value) + this.intStep;
           this.value = this.count.toFixed(this.decimalNumber);
         } else {
-          this.tmp = parseFloat(this.value);
-          this.count = parseFloat(this.tmp) + defaultStep;
-          this.value = this.count.toFixed(this.decimalNumber);
+          if (this.customStep !== null) {
+            this.tmp = parseFloat(this.value);
+            this.lastStep =
+              parseFloat(defaultStep.toFixed(this.decimalNumber)) +
+              parseFloat(this.customStep.toFixed(this.decimalNumber)) -
+              parseFloat(defaultStep.toFixed(this.decimalNumber));
+            this.count = parseFloat(this.tmp) + this.lastStep;
+            this.value = this.count.toFixed(this.decimalNumber);
+          } else {
+            this.tmp = parseFloat(this.value);
+            this.count = parseFloat(this.tmp) + defaultStep;
+            this.value = this.count.toFixed(this.decimalNumber);
+          }
         }
+      } else {
+        this.tmp = this.value;
+        this.count = +this.tmp + this.intStep;
+        this.value = this.count.toString();
       }
-    } else {
-      this.tmp = this.value;
-      this.count = +this.tmp + this.intStep;
-      this.value = this.count.toString();
     }
   }
 
   downStepHandel() {
-    const defaultStep: number = Math.pow(
-      this.decimalConstant,
-      this.decimalNumber
-    );
-    this.dotPosition = this.value.indexOf(".") + 1;
-    if (this.value && this.value.match(/\./g)) {
-      if (this.dotPosition > this.cursorPosition) {
-        this.tmp = parseFloat(this.value);
-        this.count = parseFloat(this.value) - this.intStep;
-        this.value = this.count.toFixed(this.decimalNumber);
-      } else {
-        if (this.customStep !== null) {
+    if (this.value == null) {
+      this.value = "0";
+    } else {
+      const defaultStep: number = Math.pow(
+        this.decimalConstant,
+        this.decimalNumber
+      );
+      this.dotPosition = this.value.indexOf(".") + 1;
+      if (this.value && this.value.match(/\./g)) {
+        if (this.dotPosition > this.cursorPosition) {
           this.tmp = parseFloat(this.value);
-          this.lastStep =
-            parseFloat(defaultStep.toFixed(this.decimalNumber)) +
-            parseFloat(this.customStep.toFixed(this.decimalNumber)) -
-            parseFloat(defaultStep.toFixed(this.decimalNumber));
-          this.count = parseFloat(this.tmp) - this.lastStep;
+          this.count = parseFloat(this.value) - this.intStep;
           this.value = this.count.toFixed(this.decimalNumber);
         } else {
-          this.tmp = parseFloat(this.value);
-          this.count = parseFloat(this.tmp) - defaultStep;
-          this.value = this.count.toFixed(this.decimalNumber);
+          if (this.customStep !== null) {
+            this.tmp = parseFloat(this.value);
+            this.lastStep =
+              parseFloat(defaultStep.toFixed(this.decimalNumber)) +
+              parseFloat(this.customStep.toFixed(this.decimalNumber)) -
+              parseFloat(defaultStep.toFixed(this.decimalNumber));
+            this.count = parseFloat(this.tmp) - this.lastStep;
+            this.value = this.count.toFixed(this.decimalNumber);
+          } else {
+            this.tmp = parseFloat(this.value);
+            this.count = parseFloat(this.tmp) - defaultStep;
+            this.value = this.count.toFixed(this.decimalNumber);
+          }
         }
+      } else {
+        this.tmp = +this.value;
+        this.count = +this.tmp - this.intStep;
+        this.value = this.count.toString();
       }
-    } else {
-      this.tmp = +this.value;
-      this.count = +this.tmp - this.intStep;
-      this.value = this.count.toString();
     }
   }
 

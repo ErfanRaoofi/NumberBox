@@ -12,7 +12,7 @@ import { Subject } from "rxjs";
   selector: "app-time-picker",
   templateUrl: "time-picker.component.html",
 })
-export class TimePickerComponent implements OnInit, AfterViewInit {
+export class TimePickerComponent implements OnInit {
   @Input()
   timeType: any;
 
@@ -64,25 +64,40 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
   userQuestionUpdate = new Subject<string>();
 
   // value: string = "";
-  private _value: string = "00:00:00 am";
+  private _value: string;
   public get value(): string {
     return this._value;
   }
   public set value(v: string) {
     if (this._value) {
-      debugger;
       const old = this._value;
-      // v = old.charAt(9) = "a";
-      // const typeIndex = old.charAt(9);
-      // const newType = typeIndex;
-
-      // let newValue = newType.toString();
-      // if (newValue === "0") {
-
-      //   newValue = "a";
-      // }
-      // const type =  newValue ;
-      //   v = type;
+      const ind1 = this.value.charAt(0);
+      const ind2 = this.value.charAt(1);
+      const ind3 = this.value.charAt(2);
+      const ind4 = this.value.charAt(3);
+      const ind5 = this.value.charAt(4);
+      const ind6 = this.value.charAt(5);
+      const ind7 = this.value.charAt(6);
+      const ind8 = this.value.charAt(7);
+      const ind9 = this.value.charAt(8);
+      const hms = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9;
+      const hm = ind1 + ind2 + ind3 + ind4 + ind5 + ind6;
+      const h = ind1 + ind2 + ind3;
+      if (this.timeType.mask === this.hhMmSsAM) {
+        if (old === hms + "0" + "m") {
+          v = hms + "a" + "m";
+        }
+      }
+      if (this.timeType.mask === this.hhMmAM) {
+        if (old === hm + "0" + "m") {
+          v = hm + "a" + "m";
+        }
+      }
+      if (this.timeType.mask === this.hhMmAM) {
+        if (old === h + "0" + "m") {
+          v = h + "a" + "m";
+        }
+      }
     }
     this._value = v;
   }
@@ -101,53 +116,69 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
   @Input() intStep: number = 1;
   constructor() {}
 
-  ngOnInit() {}
+  // ngOnInit() {}
 
-  ngAfterViewInit(): void {
+  ngOnInit(): void {
     switch (this.timeType) {
       case "HhMmSs":
         this.timeType = {
-          // guide: true,
-          showMask: false,
+          guide: true,
+          showMask: true,
           mask: this.HhMmSs,
           keepCharPositions: true,
+          placeholderChar: "0",
         };
         this.value = "00:00:00";
         break;
       case "HhMm":
         this.timeType = {
-          guide: false,
-          showMask: false,
+          guide: true,
+          showMask: true,
           mask: this.HhMm,
+          keepCharPositions: true,
+          placeholderChar: "0",
         };
+        this.value = "00:00";
         break;
       case "Hh":
         this.timeType = {
-          guide: false,
-          showMask: false,
+          guide: true,
+          showMask: true,
           mask: this.Hh,
+          keepCharPositions: true,
+          placeholderChar: "0",
         };
+        this.value = "00";
         break;
       case "hhMmSs":
         this.timeType = {
-          guide: false,
-          showMask: false,
+          guide: true,
+          showMask: true,
           mask: this.hhMmSs,
+          keepCharPositions: true,
+          placeholderChar: "-",
         };
+        this.value = "--:--:--";
         break;
       case "hhMm":
         this.timeType = {
           guide: false,
           showMask: false,
           mask: this.hhMm,
+          keepCharPositions: true,
+          placeholderChar: "0",
         };
+        this.value = "00:00";
         break;
       case "hh":
         this.timeType = {
           guide: false,
           showMask: false,
           mask: this.hh,
+          keepCharPositions: true,
+          placeholderChar: "0",
         };
+        this.value = "00:00:00";
         break;
       case "hhMmSsAM":
         this.timeType = {
@@ -155,7 +186,6 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
           showMask: true,
           mask: this.hhMmSsAM,
           keepCharPositions: true,
-          // modelClean: true,
           placeholderChar: "0",
         };
         this.value = "00:00:00 am";
@@ -166,6 +196,7 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
           showMask: true,
           mask: this.hhMmAM,
           keepCharPositions: true,
+          placeholderChar: "0",
         };
         this.value = "00:00 am";
         break;
@@ -175,6 +206,7 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
           showMask: true,
           mask: this.hhAM,
           keepCharPositions: true,
+          placeholderChar: "0",
         };
         this.value = "00 am";
         break;
@@ -189,13 +221,15 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
     const firstChar = this.value.charAt(0);
     const secondChar = this.value.charAt(1);
 
-    if (
-      this.input.nativeElement.selectionStart ||
-      this.input.nativeElement.selectionStart === 0
-    ) {
-      this.cursorPosition = this.input.nativeElement.selectionStart;
-      this.cursorPosition += 1;
-    }
+    setTimeout(() => {
+      if (
+        this.input.nativeElement.selectionStart ||
+        this.input.nativeElement.selectionStart === 0
+      ) {
+        this.cursorPosition = this.input.nativeElement.selectionStart;
+        // this.cursorPosition += 1 ;
+      }
+    }, 0);
 
     // if (event.keyCode !== 8 && !pattern.test(inputChar)) {
     //   event.preventDefault();
@@ -211,6 +245,26 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
         }
       }
       // }
+    }
+    if (
+      this.timeType.mask === this.hhMmSs ||
+      this.timeType.mask === this.hhMm ||
+      this.timeType.mask === this.hh ||
+      this.timeType.mask === this.hhMmSsAM ||
+      this.timeType.mask === this.hhMmAM ||
+      this.timeType.mask === this.hhAM
+    ) {
+      if (firstChar === "1") {
+        if (
+          secondChar === "" ||
+          this.value.charAt(1) >= "3" ||
+          this.cursorPosition < 3
+        ) {
+          if (inputChar >= "3") {
+            event.preventDefault();
+          }
+        }
+      }
     }
   }
 
@@ -254,6 +308,35 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
 
     // backspace Control
     if (event.keyCode === 8) {
+      const ind1 = this.value.charAt(0);
+      const ind2 = this.value.charAt(1);
+      const ind3 = this.value.charAt(2);
+      const ind4 = this.value.charAt(3);
+      const ind5 = this.value.charAt(4);
+      const ind6 = this.value.charAt(5);
+      const ind7 = this.value.charAt(6);
+      const ind8 = this.value.charAt(7);
+      const ind9 = this.value.charAt(8);
+      const ind10 = this.value.charAt(9);
+      if (this.timeType.mask === this.hhMmSsAM) {
+        if (ind10 === "0") {
+          this.value = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9 + "a" + "m";
+          this.cursorPosition = 0;
+        }
+      }
+      if (this.timeType.mask === this.hhMmAM) {
+        if (ind7 === "0") {
+          this.value = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + "a" + "m";
+          this.cursorPosition = 0;
+        }
+      }
+      if (this.timeType.mask === this.hhAM) {
+        if (ind4.toString() !== "a" || ind4.toString() !== "p") {
+          this.value = ind1 + ind2 + ind3 + "a" + "m";
+          this.cursorPosition = 0;
+        }
+      }
+
       if (this.value.length <= 0) {
         this.cursorPosition = 0;
       } else {
@@ -265,24 +348,24 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
   handleKeyDown(event: KeyboardEvent) {
     let newValue = this.value;
 
-    const index1 = newValue.charAt(0);
-    const index2 = newValue.charAt(1);
-    const index3 = this.value.charAt(2);
-    const index4 = this.value.charAt(3);
-    const index5 = this.value.charAt(4);
-    const index6 = this.value.charAt(5);
-    const index7 = this.value.charAt(6);
-    const index8 = this.value.charAt(7);
-    const index9 = this.value.charAt(8);
-    const index10 = this.value.charAt(9);
-    const index11 = this.value.charAt(10);
+    const ind1 = newValue.charAt(0);
+    const ind2 = newValue.charAt(1);
+    const ind3 = this.value.charAt(2);
+    const ind4 = this.value.charAt(3);
+    const ind5 = this.value.charAt(4);
+    const ind6 = this.value.charAt(5);
+    const ind7 = this.value.charAt(6);
+    const ind8 = this.value.charAt(7);
+    const ind9 = this.value.charAt(8);
+    const ind10 = this.value.charAt(9);
+    const ind11 = this.value.charAt(10);
 
     // up key
     if (event.keyCode === 38) {
       // hour
       if (this.cursorPosition <= 2) {
-        const hourIndex = index1 + index2;
-        const newHour = +hourIndex + 1;
+        const hourind = ind1 + ind2;
+        const newHour = +hourind + 1;
         newValue = newHour.toString();
         if (
           this.timeType.mask === this.hhMmSs ||
@@ -308,23 +391,15 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
             newValue;
           }
         }
-        const afterHourIndex =
-          index3 +
-          index4 +
-          index5 +
-          index6 +
-          index7 +
-          index8 +
-          index9 +
-          index10 +
-          index11;
-        const hour = newValue.toString() + afterHourIndex;
+        const afterHourind =
+          ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9 + ind10 + ind11;
+        const hour = newValue.toString() + afterHourind;
         this.value = hour;
       }
       // minute
       if (this.cursorPosition >= 3 && this.cursorPosition <= 5) {
-        const hourIndex = index4 + index5;
-        const newHour = +hourIndex + 1;
+        const hourind = ind4 + ind5;
+        const newHour = +hourind + 1;
 
         newValue = newHour.toString();
         if (parseInt(newValue) > 59) {
@@ -334,17 +409,16 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
         } else {
           newValue;
         }
-        const beforeHourIndex = index1 + index2 + index3;
-        const afterHourIndex =
-          index6 + index7 + index8 + index9 + index10 + index11;
-        const minute = beforeHourIndex + newValue.toString() + afterHourIndex;
+        const beforeHourind = ind1 + ind2 + ind3;
+        const afterHourind = ind6 + ind7 + ind8 + ind9 + ind10 + ind11;
+        const minute = beforeHourind + newValue.toString() + afterHourind;
         this.value = minute;
       }
 
       // second
       if (this.cursorPosition >= 6 && this.cursorPosition <= 8) {
-        const secondIndex = index7 + index8;
-        const newSecond = +secondIndex + 1;
+        const secondind = ind7 + ind8;
+        const newSecond = +secondind + 1;
 
         newValue = newSecond.toString();
         if (parseInt(newValue) > 59) {
@@ -354,39 +428,60 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
         } else {
           newValue;
         }
-        const beforeHourIndex =
-          index1 + index2 + index3 + index4 + index5 + index6;
-        const afterHourIndex = index9 + index10 + index11;
-        const second = beforeHourIndex + newValue.toString() + afterHourIndex;
+        const beforeHourind = ind1 + ind2 + ind3 + ind4 + ind5 + ind6;
+        const afterHourind = ind9 + ind10 + ind11;
+        const second = beforeHourind + newValue.toString() + afterHourind;
         this.value = second;
       }
 
-      // type
-      if (this.cursorPosition > 8) {
-        const typeIndex = index10;
-        const newType = typeIndex;
+      // type AM/PM
+      if (this.timeType.mask === this.hhMmSsAM) {
+        if (this.cursorPosition > 8) {
+          let typeind = ind10.toString();
 
-        newValue = newType.toString();
-        const beforeHourIndex =
-          index1 +
-          index2 +
-          index3 +
-          index4 +
-          index5 +
-          index6 +
-          index7 +
-          index8 +
-          index9;
-        const afterHourIndex = index11;
+          const beforeHourind =
+            ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9;
+          const afterHourind = ind11;
 
-        if (index10 === "p") {
-          newValue = "a";
-        } else if (index10 === "a") {
-          newValue = "p";
+          if (ind10 === "p") {
+            typeind = "a";
+          } else if (ind10 === "a") {
+            typeind = "p";
+          }
+          this.value = beforeHourind + typeind + afterHourind;
         }
+      }
+      if (this.timeType.mask === this.hhMmAM) {
+        if (this.cursorPosition >= 6) {
+          let typeind = ind7.toString();
 
-        const type = beforeHourIndex + newValue + afterHourIndex;
-        this.value = type;
+          const beforeHourind =
+            ind1 + ind2 + ind3 + ind4 + ind5 + ind6;
+          const afterHourind = ind8;
+
+          if (ind7 === "p") {
+            typeind = "a";
+          } else if (ind7 === "a") {
+            typeind = "p";
+          }
+          this.value = (beforeHourind + typeind + afterHourind);
+        }
+      }
+      if (this.timeType.mask === this.hhAM) {
+        if (this.cursorPosition >= 3) {
+          let typeind2 = ind4.toString();
+
+          const beforeHourind =
+            ind1 + ind2 + ind3;
+          const afterHourind = ind5;
+
+          if (ind4 === "p") {
+            typeind2 = "a";
+          } else if (ind4 === "a") {
+            typeind2 = "p";
+          }
+          this.value = beforeHourind + typeind2 + afterHourind;
+        }
       }
     }
 
@@ -394,8 +489,8 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
     if (event.keyCode === 40) {
       // hour
       if (this.cursorPosition <= 2) {
-        const hourIndex = index1 + index2;
-        const newHour = +hourIndex - 1;
+        const hourind = ind1 + ind2;
+        const newHour = +hourind - 1;
 
         newValue = newHour.toString();
         if (
@@ -422,23 +517,15 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
             newValue;
           }
         }
-        const afterHourIndex =
-          index3 +
-          index4 +
-          index5 +
-          index6 +
-          index7 +
-          index8 +
-          index9 +
-          index10 +
-          index11;
-        const hour = newValue.toString() + afterHourIndex;
+        const afterHourind =
+          ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9 + ind10 + ind11;
+        const hour = newValue.toString() + afterHourind;
         this.value = hour;
       }
       // minute
       if (this.cursorPosition >= 3 && this.cursorPosition <= 5) {
-        const hourIndex = index4 + index5;
-        const newHour = +hourIndex - 1;
+        const hourind = ind4 + ind5;
+        const newHour = +hourind - 1;
 
         newValue = newHour.toString();
         if (parseInt(newValue) < 0) {
@@ -448,17 +535,16 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
         } else {
           newValue;
         }
-        const beforeHourIndex = index1 + index2 + index3;
-        const afterHourIndex =
-          index6 + index7 + index8 + index9 + index10 + index11;
-        const minute = beforeHourIndex + newValue.toString() + afterHourIndex;
+        const beforeHourind = ind1 + ind2 + ind3;
+        const afterHourind = ind6 + ind7 + ind8 + ind9 + ind10 + ind11;
+        const minute = beforeHourind + newValue.toString() + afterHourind;
         this.value = minute;
       }
 
       // second
       if (this.cursorPosition >= 6 && this.cursorPosition <= 8) {
-        const hourIndex = index7 + index8;
-        const newHour = +hourIndex - 1;
+        const hourind = ind7 + ind8;
+        const newHour = +hourind - 1;
 
         newValue = newHour.toString();
         if (parseInt(newValue) < 0) {
@@ -468,44 +554,61 @@ export class TimePickerComponent implements OnInit, AfterViewInit {
         } else {
           newValue;
         }
-        const beforeHourIndex =
-          index1 + index2 + index3 + index4 + index5 + index6;
-        const afterHourIndex = index9 + index10 + index11;
-        const second = beforeHourIndex + newValue.toString() + afterHourIndex;
+        const beforeHourind = ind1 + ind2 + ind3 + ind4 + ind5 + ind6;
+        const afterHourind = ind9 + ind10 + ind11;
+        const second = beforeHourind + newValue.toString() + afterHourind;
         this.value = second;
       }
 
       // type
-      if (this.cursorPosition > 8) {
-        const typeIndex = index10;
-        const newType = typeIndex;
+      debugger;
+      if (this.timeType.mask === this.hhMmSsAM) {
+        if (this.cursorPosition > 8) {
+          let typeind = ind10.toString();
 
-        newValue = newType.toString();
-        const beforeHourIndex =
-          index1 +
-          index2 +
-          index3 +
-          index4 +
-          index5 +
-          index6 +
-          index7 +
-          index8 +
-          index9;
-        const afterHourIndex = index11;
-        if (
-          this.timeType.timeType === this.hhMmSsAM ||
-          this.timeType.timeType === this.hhMmAM ||
-          this.timeType.timeType === this.hhAM
-        ) {
-        }
-        if (index10 === "p") {
-          newValue = "a";
-        } else if (index10 === "a") {
-          newValue = "p";
-        }
+          const beforeHourind =
+            ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9;
+          const afterHourind = ind11;
 
-        const type = beforeHourIndex + newValue + afterHourIndex;
-        this.value = type;
+          if (ind10 === "p") {
+            typeind = "a";
+          } else if (ind10 === "a") {
+            typeind = "p";
+          }
+          this.value = beforeHourind + typeind + afterHourind;
+        }
+      }
+      if (this.timeType.mask === this.hhMmAM) {
+        if (this.cursorPosition >= 6) {
+          let typeind = ind7.toString();
+
+          const beforeHourind =
+            ind1 + ind2 + ind3 + ind4 + ind5 + ind6;
+          const afterHourind = ind8;
+
+          if (ind7 === "p") {
+            typeind = "a";
+          } else if (ind7 === "a") {
+            typeind = "p";
+          }
+          this.value = (beforeHourind + typeind + afterHourind);
+        }
+      }
+      if (this.timeType.mask === this.hhAM) {
+        if (this.cursorPosition >= 3) {
+          let typeind2 = ind4.toString();
+
+          const beforeHourind =
+            ind1 + ind2 + ind3;
+          const afterHourind = ind5;
+
+          if (ind4 === "p") {
+            typeind2 = "a";
+          } else if (ind4 === "a") {
+            typeind2 = "p";
+          }
+          this.value = beforeHourind + typeind2 + afterHourind;
+        }
       }
     }
 
