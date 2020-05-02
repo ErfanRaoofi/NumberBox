@@ -71,35 +71,87 @@ export class TimePickerComponent implements OnInit {
   public set value(v: string) {
     if (this._value) {
       const old = this._value;
-      const ind1 = this.value.charAt(0);
-      const ind2 = this.value.charAt(1);
-      const ind3 = this.value.charAt(2);
-      const ind4 = this.value.charAt(3);
-      const ind5 = this.value.charAt(4);
-      const ind6 = this.value.charAt(5);
-      const ind7 = this.value.charAt(6);
-      const ind8 = this.value.charAt(7);
-      const ind9 = this.value.charAt(8);
-      const hms = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9;
-      const hm = ind1 + ind2 + ind3 + ind4 + ind5 + ind6;
-      const h = ind1 + ind2 + ind3;
-      if (this.timeType.mask === this.hhMmSsAM) {
-        if (old === hms + "0" + "m") {
-          v = hms + "a" + "m";
-        }
+      let ind1 = v.charAt(0);
+      const ind2 = v.charAt(1);
+      const ind3 = v.charAt(2);
+      const ind4 = v.charAt(3);
+      const ind5 = v.charAt(4);
+      const ind6 = v.charAt(5);
+      const ind7 = v.charAt(6);
+      const ind8 = v.charAt(7);
+      const ind9 = v.charAt(8);
+      const ind10 = v.charAt(9);
+
+      const indOld10 = old.charAt(9);
+
+debugger
+     
+      //
+      if (ind1 === "-" && ind2 !== "-" && this.timeType.mask === this.hhMmSsAM) {
+        v = '0' + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9 + ind10 + 'm';
       }
-      if (this.timeType.mask === this.hhMmAM) {
-        if (old === hm + "0" + "m") {
-          v = hm + "a" + "m";
-        }
+      if (ind4 === "-" && ind5 !== "-" && this.timeType.mask === this.hhMmSsAM) {
+        v = ind1 + ind2 + ind3 + '0' + ind5 + ind6 + ind7 + ind8 + ind9 + ind10 + 'm';
       }
-      if (this.timeType.mask === this.hhMmAM) {
-        if (old === h + "0" + "m") {
-          v = h + "a" + "m";
-        }
+      if (ind7 === "-" && ind8 !== "-" && this.timeType.mask === this.hhMmSsAM) {
+        v = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + '0' + ind8 + ind9 + ind10 + 'm';
       }
+      if (indOld10 === '-' && this.timeType.mask === this.hhMmSsAM) {
+        v = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9 + 'a' + 'm';
+      }
+
+      //
+      if (ind1 === "-" && ind2 !== "-" && this.timeType.mask === this.hhMmAM) {
+        v = '0' + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 +  'm';
+      }
+      if (ind4 === "-" && ind5 !== "-" && this.timeType.mask === this.hhMmAM) {
+        v = ind1 + ind2 + ind3 + '0' + ind5 + ind6 + ind7 + 'm';
+      }
+      if (ind7 === '-' && this.timeType.mask === this.hhMmAM) {
+        v = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + 'a' + 'm';
+      }
+
+       //
+      if (ind1 === "-" && ind2 !== "-" && this.timeType.mask === this.hhAM) {
+        v = '0' + ind2 + ind3 + ind4  + 'm';
+      }
+      if (ind4 === '-' && this.timeType.mask === this.hhAM) {
+        v = ind1 + ind2 + ind3 + 'a' + 'm';
+      }
+
+      /////////////////////////
+
+      //
+      if (ind1 === "-" && ind2 !== "-" && (this.timeType.mask === this.hhMmSs || this.timeType.mask === this.HhMmSs)) {
+        v = '0' + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 + ind8;
+      }
+      if (ind4 === "-" && ind5 !== "-" && (this.timeType.mask === this.hhMmSs || this.timeType.mask === this.HhMmSs)) {
+        v = ind1 + ind2 + ind3 + '0' + ind5 + ind6 + ind7 + ind8 ;
+      }
+      if (ind7 === "-" && ind8 !== "-" && (this.timeType.mask === this.hhMmSs || this.timeType.mask === this.HhMmSs)) {
+        v = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + '0' + ind8 ;
+      }
+     
+
+      //
+      if (ind1 === "-" && ind2 !== "-" && (this.timeType.mask === this.hhMm || this.timeType.mask === this.HhMm)) {
+        v = '0' + ind2 + ind3 + ind4 + ind5 ;
+      }
+      if (ind4 === "-" && ind5 !== "-" && (this.timeType.mask === this.hhMm || this.timeType.mask === this.HhMm)) {
+        v = ind1 + ind2 + ind3 + '0' + ind5 ;
+      }
+
+       //
+      if (ind1 === "-" && ind2 !== "-" && (this.timeType.mask === this.hh || this.timeType.mask === this.Hh)) {
+        v = '0' + ind2 ;
+      }
+
     }
     this._value = v;
+    if (this._value === "--:--:-- am" || this._value === "--:-- am" || this._value === "-- am" ) {
+      this.cursorPosition = 0;
+      this.setCaret();
+    }
   }
 
   tmp: any;
@@ -126,9 +178,9 @@ export class TimePickerComponent implements OnInit {
           showMask: true,
           mask: this.HhMmSs,
           keepCharPositions: true,
-          placeholderChar: "0",
+          placeholderChar: "-",
         };
-        this.value = "00:00:00";
+        this.value = "--:--:--";
         break;
       case "HhMm":
         this.timeType = {
@@ -136,9 +188,9 @@ export class TimePickerComponent implements OnInit {
           showMask: true,
           mask: this.HhMm,
           keepCharPositions: true,
-          placeholderChar: "0",
+          placeholderChar: "-",
         };
-        this.value = "00:00";
+        this.value = "--:--";
         break;
       case "Hh":
         this.timeType = {
@@ -146,9 +198,9 @@ export class TimePickerComponent implements OnInit {
           showMask: true,
           mask: this.Hh,
           keepCharPositions: true,
-          placeholderChar: "0",
+          placeholderChar: "-",
         };
-        this.value = "00";
+        this.value = "--";
         break;
       case "hhMmSs":
         this.timeType = {
@@ -166,9 +218,9 @@ export class TimePickerComponent implements OnInit {
           showMask: false,
           mask: this.hhMm,
           keepCharPositions: true,
-          placeholderChar: "0",
+          placeholderChar: "-",
         };
-        this.value = "00:00";
+        this.value = "--:--";
         break;
       case "hh":
         this.timeType = {
@@ -176,9 +228,9 @@ export class TimePickerComponent implements OnInit {
           showMask: false,
           mask: this.hh,
           keepCharPositions: true,
-          placeholderChar: "0",
+          placeholderChar: "-",
         };
-        this.value = "00:00:00";
+        this.value = "--:--:--";
         break;
       case "hhMmSsAM":
         this.timeType = {
@@ -186,9 +238,9 @@ export class TimePickerComponent implements OnInit {
           showMask: true,
           mask: this.hhMmSsAM,
           keepCharPositions: true,
-          placeholderChar: "0",
+          placeholderChar: "-",
         };
-        this.value = "00:00:00 am";
+        this.value = "--:--:-- am";
         break;
       case "hhMmAM":
         this.timeType = {
@@ -196,9 +248,9 @@ export class TimePickerComponent implements OnInit {
           showMask: true,
           mask: this.hhMmAM,
           keepCharPositions: true,
-          placeholderChar: "0",
+          placeholderChar: "-",
         };
-        this.value = "00:00 am";
+        this.value = "--:-- am";
         break;
       case "hhAM":
         this.timeType = {
@@ -206,9 +258,9 @@ export class TimePickerComponent implements OnInit {
           showMask: true,
           mask: this.hhAM,
           keepCharPositions: true,
-          placeholderChar: "0",
+          placeholderChar: "-",
         };
-        this.value = "00 am";
+        this.value = "-- am";
         break;
       default:
     }
@@ -226,14 +278,12 @@ export class TimePickerComponent implements OnInit {
         this.input.nativeElement.selectionStart ||
         this.input.nativeElement.selectionStart === 0
       ) {
+       
         this.cursorPosition = this.input.nativeElement.selectionStart;
         // this.cursorPosition += 1 ;
       }
     }, 0);
 
-    // if (event.keyCode !== 8 && !pattern.test(inputChar)) {
-    //   event.preventDefault();
-    // } else {
     if (firstChar === "2") {
       if (
         secondChar === "" ||
@@ -244,7 +294,6 @@ export class TimePickerComponent implements OnInit {
           event.preventDefault();
         }
       }
-      // }
     }
     if (
       this.timeType.mask === this.hhMmSs ||
@@ -265,6 +314,9 @@ export class TimePickerComponent implements OnInit {
           }
         }
       }
+    }
+    if (inputChar === "-") {
+      event.preventDefault();
     }
   }
 
@@ -318,17 +370,19 @@ export class TimePickerComponent implements OnInit {
       const ind8 = this.value.charAt(7);
       const ind9 = this.value.charAt(8);
       const ind10 = this.value.charAt(9);
+      debugger;
       if (this.timeType.mask === this.hhMmSsAM) {
-        if (ind10 === "0") {
-          this.value = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9 + "a" + "m";
-          this.cursorPosition = 0;
+        if (ind10 === "-") {
+          this.value =
+            ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9 + "a" + "m";
         }
       }
       if (this.timeType.mask === this.hhMmAM) {
-        if (ind7 === "0") {
+        if (ind7.toString() !== "a" || ind7.toString() !== "p") {
           this.value = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + "a" + "m";
-          this.cursorPosition = 0;
+          // this.cursorPosition = 0;
         }
+        // this.cursorPosition = 0;
       }
       if (this.timeType.mask === this.hhAM) {
         if (ind4.toString() !== "a" || ind4.toString() !== "p") {
@@ -375,20 +429,19 @@ export class TimePickerComponent implements OnInit {
           this.timeType.mask === this.hhMmAM ||
           this.timeType.mask === this.hhAM
         ) {
+          if (hourind === "--") {
+            newValue = "0";
+          }
           if (parseInt(newValue) > 12) {
             newValue = "01";
           } else if (parseInt(newValue) < 10) {
             newValue = "0" + newValue;
-          } else {
-            newValue;
           }
         } else {
           if (parseInt(newValue) > 23) {
             newValue = "00";
           } else if (parseInt(newValue) < 10) {
             newValue = "0" + newValue;
-          } else {
-            newValue;
           }
         }
         const afterHourind =
@@ -402,12 +455,13 @@ export class TimePickerComponent implements OnInit {
         const newHour = +hourind + 1;
 
         newValue = newHour.toString();
+        if (hourind === "--") {
+          newValue = "0";
+        }
         if (parseInt(newValue) > 59) {
           newValue = "00";
         } else if (parseInt(newValue) < 10) {
           newValue = "0" + newValue;
-        } else {
-          newValue;
         }
         const beforeHourind = ind1 + ind2 + ind3;
         const afterHourind = ind6 + ind7 + ind8 + ind9 + ind10 + ind11;
@@ -421,12 +475,13 @@ export class TimePickerComponent implements OnInit {
         const newSecond = +secondind + 1;
 
         newValue = newSecond.toString();
+        if (secondind === "--") {
+          newValue = "0";
+        }
         if (parseInt(newValue) > 59) {
           newValue = "00";
         } else if (parseInt(newValue) < 10) {
           newValue = "0" + newValue;
-        } else {
-          newValue;
         }
         const beforeHourind = ind1 + ind2 + ind3 + ind4 + ind5 + ind6;
         const afterHourind = ind9 + ind10 + ind11;
@@ -455,8 +510,7 @@ export class TimePickerComponent implements OnInit {
         if (this.cursorPosition >= 6) {
           let typeind = ind7.toString();
 
-          const beforeHourind =
-            ind1 + ind2 + ind3 + ind4 + ind5 + ind6;
+          const beforeHourind = ind1 + ind2 + ind3 + ind4 + ind5 + ind6;
           const afterHourind = ind8;
 
           if (ind7 === "p") {
@@ -464,15 +518,14 @@ export class TimePickerComponent implements OnInit {
           } else if (ind7 === "a") {
             typeind = "p";
           }
-          this.value = (beforeHourind + typeind + afterHourind);
+          this.value = beforeHourind + typeind + afterHourind;
         }
       }
       if (this.timeType.mask === this.hhAM) {
         if (this.cursorPosition >= 3) {
           let typeind2 = ind4.toString();
 
-          const beforeHourind =
-            ind1 + ind2 + ind3;
+          const beforeHourind = ind1 + ind2 + ind3;
           const afterHourind = ind5;
 
           if (ind4 === "p") {
@@ -501,20 +554,19 @@ export class TimePickerComponent implements OnInit {
           this.timeType.mask === this.hhMmAM ||
           this.timeType.mask === this.hhAM
         ) {
+          if (hourind === "--") {
+            newValue = "0";
+          }
           if (parseInt(newValue) < 1) {
             newValue = "12";
           } else if (parseInt(newValue) < 10) {
             newValue = "0" + newValue;
-          } else {
-            newValue;
           }
         } else {
           if (parseInt(newValue) < 0) {
             newValue = "23";
           } else if (parseInt(newValue) < 10) {
             newValue = "0" + newValue;
-          } else {
-            newValue;
           }
         }
         const afterHourind =
@@ -528,12 +580,13 @@ export class TimePickerComponent implements OnInit {
         const newHour = +hourind - 1;
 
         newValue = newHour.toString();
+        if (hourind === "--") {
+          newValue = "0";
+        }
         if (parseInt(newValue) < 0) {
           newValue = "59";
         } else if (parseInt(newValue) < 10) {
           newValue = "0" + newValue;
-        } else {
-          newValue;
         }
         const beforeHourind = ind1 + ind2 + ind3;
         const afterHourind = ind6 + ind7 + ind8 + ind9 + ind10 + ind11;
@@ -547,12 +600,13 @@ export class TimePickerComponent implements OnInit {
         const newHour = +hourind - 1;
 
         newValue = newHour.toString();
+        if (hourind === "--") {
+          newValue = "0";
+        }
         if (parseInt(newValue) < 0) {
           newValue = "59";
         } else if (parseInt(newValue) < 10) {
           newValue = "0" + newValue;
-        } else {
-          newValue;
         }
         const beforeHourind = ind1 + ind2 + ind3 + ind4 + ind5 + ind6;
         const afterHourind = ind9 + ind10 + ind11;
@@ -561,7 +615,6 @@ export class TimePickerComponent implements OnInit {
       }
 
       // type
-      debugger;
       if (this.timeType.mask === this.hhMmSsAM) {
         if (this.cursorPosition > 8) {
           let typeind = ind10.toString();
@@ -582,8 +635,7 @@ export class TimePickerComponent implements OnInit {
         if (this.cursorPosition >= 6) {
           let typeind = ind7.toString();
 
-          const beforeHourind =
-            ind1 + ind2 + ind3 + ind4 + ind5 + ind6;
+          const beforeHourind = ind1 + ind2 + ind3 + ind4 + ind5 + ind6;
           const afterHourind = ind8;
 
           if (ind7 === "p") {
@@ -591,15 +643,14 @@ export class TimePickerComponent implements OnInit {
           } else if (ind7 === "a") {
             typeind = "p";
           }
-          this.value = (beforeHourind + typeind + afterHourind);
+          this.value = beforeHourind + typeind + afterHourind;
         }
       }
       if (this.timeType.mask === this.hhAM) {
         if (this.cursorPosition >= 3) {
           let typeind2 = ind4.toString();
 
-          const beforeHourind =
-            ind1 + ind2 + ind3;
+          const beforeHourind = ind1 + ind2 + ind3;
           const afterHourind = ind5;
 
           if (ind4 === "p") {
@@ -613,10 +664,14 @@ export class TimePickerComponent implements OnInit {
     }
 
     if (event.which === 38 || event.which === 40) {
-      document.getElementById("timePickerValue").style.caretColor = "#ffffffff";
+      document.getElementById("timePickerValue").style.caretColor =
+        "transparent";
       event.preventDefault();
       event.stopPropagation();
       return false;
+    }
+    if (event.keyCode === 46) {
+      event.preventDefault();
     }
   }
 
@@ -625,6 +680,7 @@ export class TimePickerComponent implements OnInit {
       this.input.nativeElement.selectionStart ||
       this.input.nativeElement.selectionStart === 0
     ) {
+      
       this.cursorPosition = this.input.nativeElement.selectionStart;
     }
   }
