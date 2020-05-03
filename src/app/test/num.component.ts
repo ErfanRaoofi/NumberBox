@@ -135,7 +135,7 @@ export class NumComponent {
 
   handleKeyUp(event: any) {
     if (event.which === 38 || event.which === 40) {
-      document.getElementById("NumberBoxValue").style.caretColor = "black";
+      this.input.nativeElement.style.caretColor = "auto";
       event.preventDefault();
       event.stopPropagation();
     }
@@ -262,8 +262,7 @@ export class NumComponent {
 
     // stop when keydown
     if (event.which === 38 || event.which === 40) {
-      document.getElementById("NumberBoxValue").style.caretColor =
-        "transparent";
+      this.input.nativeElement.style.caretColor = "transparent";
       event.preventDefault();
       event.stopPropagation();
       return false;
@@ -324,8 +323,7 @@ export class NumComponent {
   }
 
   setCaret() {
-    const getElement = document.getElementById("NumberBoxValue");
-    this.setCaretPosition(getElement, this.cursorPosition);
+    this.setCaretPosition(this.input.nativeElement, this.cursorPosition);
   }
 
   upStepHandel() {
@@ -412,25 +410,23 @@ export class NumComponent {
 
   @HostListener("mousewheel", ["$event"]) onMousewheel(event) {
     if (event.wheelDelta > 0) {
-      document.getElementById("NumberBoxValue").style.caretColor =
-        "transparent";
+      this.input.nativeElement.style.caretColor = "transparent";
 
       this.upStepHandel();
 
       setTimeout(() => {
         this.setCaret();
-        document.getElementById("NumberBoxValue").style.caretColor = "black";
+        this.input.nativeElement.style.caretColor = "auto";
       }, 0);
     }
     if (event.wheelDelta < 0) {
-      document.getElementById("NumberBoxValue").style.caretColor =
-        "transparent";
+      this.input.nativeElement.style.caretColor = "transparent";
 
       this.downStepHandel();
 
       setTimeout(() => {
         this.setCaret();
-        document.getElementById("NumberBoxValue").style.caretColor = "black";
+        this.input.nativeElement.style.caretColor = "auto";
       }, 0);
     }
   }

@@ -4,9 +4,7 @@ import {
   Input,
   ViewChild,
   ElementRef,
-  AfterViewInit,
 } from "@angular/core";
-import { Subject } from "rxjs";
 
 @Component({
   selector: "app-time-picker",
@@ -58,12 +56,6 @@ export class TimePickerComponent implements OnInit {
 
   @ViewChild("input") input: ElementRef<HTMLInputElement>;
 
-  @Input() min: number = null;
-  @Input() max: number = null;
-
-  userQuestionUpdate = new Subject<string>();
-
-  // value: string = "";
   private _value: string;
   public get value(): string {
     return this._value;
@@ -71,7 +63,7 @@ export class TimePickerComponent implements OnInit {
   public set value(v: string) {
     if (this._value) {
       const old = this._value;
-      let ind1 = v.charAt(0);
+      const ind1 = v.charAt(0);
       const ind2 = v.charAt(1);
       const ind3 = v.charAt(2);
       const ind4 = v.charAt(3);
@@ -82,19 +74,31 @@ export class TimePickerComponent implements OnInit {
       const ind9 = v.charAt(8);
       const ind10 = v.charAt(9);
 
+      const indOld4 = old.charAt(9);
+      const indOld7 = old.charAt(9);
       const indOld10 = old.charAt(9);
 
-debugger
-     
-      //
+      // handle hhMsSsAm
       if (ind1 === "-" && ind2 !== "-" && this.timeType.mask === this.hhMmSsAM) {
         v = '0' + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9 + ind10 + 'm';
+        setTimeout(() => {
+          this.setCaretPosition(this.input.nativeElement, 2);
+          this.cursorPosition = 2;
+        }, 0);
       }
       if (ind4 === "-" && ind5 !== "-" && this.timeType.mask === this.hhMmSsAM) {
         v = ind1 + ind2 + ind3 + '0' + ind5 + ind6 + ind7 + ind8 + ind9 + ind10 + 'm';
+        setTimeout(() => {
+          this.setCaretPosition(this.input.nativeElement, 5);
+          this.cursorPosition = 5;
+        }, 0);
       }
       if (ind7 === "-" && ind8 !== "-" && this.timeType.mask === this.hhMmSsAM) {
         v = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + '0' + ind8 + ind9 + ind10 + 'm';
+        setTimeout(() => {
+          this.setCaretPosition(this.input.nativeElement, 8);
+          this.cursorPosition = 8;
+        }, 0);
       }
       if (indOld10 === '-' && this.timeType.mask === this.hhMmSsAM) {
         v = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9 + 'a' + 'm';
@@ -103,72 +107,90 @@ debugger
       //
       if (ind1 === "-" && ind2 !== "-" && this.timeType.mask === this.hhMmAM) {
         v = '0' + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 +  'm';
+        setTimeout(() => {
+          this.setCaretPosition(this.input.nativeElement, 2);
+          this.cursorPosition = 2;
+        }, 0);
       }
       if (ind4 === "-" && ind5 !== "-" && this.timeType.mask === this.hhMmAM) {
         v = ind1 + ind2 + ind3 + '0' + ind5 + ind6 + ind7 + 'm';
+        setTimeout(() => {
+          this.setCaretPosition(this.input.nativeElement, 5);
+          this.cursorPosition = 5;
+        }, 0);
       }
-      if (ind7 === '-' && this.timeType.mask === this.hhMmAM) {
+      if (indOld7 === '-' && this.timeType.mask === this.hhMmAM) {
         v = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + 'a' + 'm';
       }
 
        //
       if (ind1 === "-" && ind2 !== "-" && this.timeType.mask === this.hhAM) {
         v = '0' + ind2 + ind3 + ind4  + 'm';
+        setTimeout(() => {
+          this.setCaretPosition(this.input.nativeElement, 2);
+          this.cursorPosition = 2;
+        }, 0);
       }
-      if (ind4 === '-' && this.timeType.mask === this.hhAM) {
+      if (indOld4 === '-' && this.timeType.mask === this.hhAM) {
         v = ind1 + ind2 + ind3 + 'a' + 'm';
       }
-
-      /////////////////////////
 
       //
       if (ind1 === "-" && ind2 !== "-" && (this.timeType.mask === this.hhMmSs || this.timeType.mask === this.HhMmSs)) {
         v = '0' + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 + ind8;
+        setTimeout(() => {
+          this.setCaretPosition(this.input.nativeElement, 2);
+          this.cursorPosition = 2;
+        }, 0);
       }
       if (ind4 === "-" && ind5 !== "-" && (this.timeType.mask === this.hhMmSs || this.timeType.mask === this.HhMmSs)) {
         v = ind1 + ind2 + ind3 + '0' + ind5 + ind6 + ind7 + ind8 ;
+        setTimeout(() => {
+          this.setCaretPosition(this.input.nativeElement, 6);
+          this.cursorPosition = 6;
+        }, 0);
       }
       if (ind7 === "-" && ind8 !== "-" && (this.timeType.mask === this.hhMmSs || this.timeType.mask === this.HhMmSs)) {
         v = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + '0' + ind8 ;
+        setTimeout(() => {
+          this.setCaretPosition(this.input.nativeElement, 9);
+          this.cursorPosition = 9;
+        }, 0);
       }
-     
 
       //
       if (ind1 === "-" && ind2 !== "-" && (this.timeType.mask === this.hhMm || this.timeType.mask === this.HhMm)) {
         v = '0' + ind2 + ind3 + ind4 + ind5 ;
+        setTimeout(() => {
+          this.setCaretPosition(this.input.nativeElement, 2);
+          this.cursorPosition = 2;
+        }, 0);
       }
       if (ind4 === "-" && ind5 !== "-" && (this.timeType.mask === this.hhMm || this.timeType.mask === this.HhMm)) {
         v = ind1 + ind2 + ind3 + '0' + ind5 ;
+        setTimeout(() => {
+          this.setCaretPosition(this.input.nativeElement, 5);
+          this.cursorPosition = 5;
+        }, 0);
       }
 
        //
       if (ind1 === "-" && ind2 !== "-" && (this.timeType.mask === this.hh || this.timeType.mask === this.Hh)) {
         v = '0' + ind2 ;
+        setTimeout(() => {
+          this.setCaretPosition(this.input.nativeElement, 2);
+          this.cursorPosition = 2;
+        }, 0);
       }
 
     }
     this._value = v;
-    if (this._value === "--:--:-- am" || this._value === "--:-- am" || this._value === "-- am" ) {
-      this.cursorPosition = 0;
-      this.setCaret();
-    }
   }
-
-  tmp: any;
-
-  count: number;
-
-  findColon: boolean = false;
-  findMinus: boolean = false;
 
   cursorPosition: number = 0;
 
-  ColonPosition;
-
   @Input() intStep: number = 1;
   constructor() {}
-
-  // ngOnInit() {}
 
   ngOnInit(): void {
     switch (this.timeType) {
@@ -267,7 +289,6 @@ debugger
   }
 
   handleKeyPress(event: any) {
-    const pattern = /^[0-9\:]$/g;
 
     const inputChar = String.fromCharCode(event.charCode);
     const firstChar = this.value.charAt(0);
@@ -278,7 +299,6 @@ debugger
         this.input.nativeElement.selectionStart ||
         this.input.nativeElement.selectionStart === 0
       ) {
-       
         this.cursorPosition = this.input.nativeElement.selectionStart;
         // this.cursorPosition += 1 ;
       }
@@ -322,7 +342,7 @@ debugger
 
   handleKeyUp(event: KeyboardEvent) {
     if (event.which === 38 || event.which === 40) {
-      document.getElementById("timePickerValue").style.caretColor = "black";
+      this.input.nativeElement.style.caretColor = "auto";
       event.preventDefault();
       event.stopPropagation();
     }
@@ -355,7 +375,31 @@ debugger
 
     // end button
     if (event.keyCode === 35) {
+      if (this.timeType.mask === this.hhMmSsAM || this.timeType.mask === this.hhMmAM || this.timeType.mask === this.hhAM) {
+        if (this.timeType.mask === this.hhMmSsAM) {
+          this.cursorPosition = 9;
+          setTimeout(() => {
+            this.setCaretPosition(this.input.nativeElement,  this.cursorPosition);
+            this.input.nativeElement.style.caretColor = "auto";
+          }, 0);
+        }
+        if (this.timeType.mask === this.hhMmAM) {
+          this.cursorPosition = 6;
+          setTimeout(() => {
+            this.setCaretPosition(this.input.nativeElement,  this.cursorPosition);
+            this.input.nativeElement.style.caretColor = "auto";
+          }, 0);
+        }
+        if (this.timeType.mask === this.hhAM) {
+          this.cursorPosition = 3;
+          setTimeout(() => {
+            this.setCaretPosition(this.input.nativeElement,  this.cursorPosition);
+            this.input.nativeElement.style.caretColor = "auto";
+          }, 0);
+        }
+    } else {
       this.cursorPosition = this.value.length;
+    }
     }
 
     // backspace Control
@@ -370,24 +414,32 @@ debugger
       const ind8 = this.value.charAt(7);
       const ind9 = this.value.charAt(8);
       const ind10 = this.value.charAt(9);
-      debugger;
       if (this.timeType.mask === this.hhMmSsAM) {
         if (ind10 === "-") {
           this.value =
             ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9 + "a" + "m";
+          setTimeout(() => {
+            this.setCaretPosition(this.input.nativeElement, 0);
+            this.cursorPosition = 0;
+          }, 0);
         }
       }
       if (this.timeType.mask === this.hhMmAM) {
-        if (ind7.toString() !== "a" || ind7.toString() !== "p") {
+        if (ind7 === "-") {
           this.value = ind1 + ind2 + ind3 + ind4 + ind5 + ind6 + "a" + "m";
-          // this.cursorPosition = 0;
+          setTimeout(() => {
+            this.setCaretPosition(this.input.nativeElement, 0);
+            this.cursorPosition = 0;
+          }, 0);
         }
-        // this.cursorPosition = 0;
       }
       if (this.timeType.mask === this.hhAM) {
-        if (ind4.toString() !== "a" || ind4.toString() !== "p") {
+        if (ind4 === "-") {
           this.value = ind1 + ind2 + ind3 + "a" + "m";
-          this.cursorPosition = 0;
+          setTimeout(() => {
+            this.setCaretPosition(this.input.nativeElement, 0);
+            this.cursorPosition = 0;
+          }, 0);
         }
       }
 
@@ -400,6 +452,15 @@ debugger
   }
 
   handleKeyDown(event: KeyboardEvent) {
+    if (event.key === 'End') {
+      if (this.timeType.mask === this.hhMmSsAM || this.timeType.mask === this.hhMmAM || this.timeType.mask === this.hhAM) {
+        this.input.nativeElement.style.caretColor = "transparent";
+
+    } else {
+      this.input.nativeElement.style.caretColor = "auto";
+    }
+  }
+
     let newValue = this.value;
 
     const ind1 = newValue.charAt(0);
@@ -432,6 +493,12 @@ debugger
           if (hourind === "--") {
             newValue = "0";
           }
+          // if (hourind === ind1 + "-") {
+          //   newValue = ind1 + "0";
+          // }
+          // if (hourind === "-" + ind2) {
+          //   newValue = "0" + ind2;
+          // }
           if (parseInt(newValue) > 12) {
             newValue = "01";
           } else if (parseInt(newValue) < 10) {
@@ -458,6 +525,12 @@ debugger
         if (hourind === "--") {
           newValue = "0";
         }
+        // if (hourind === ind4 + "-") {
+        //   newValue = ind4 + "0";
+        // }
+        // if (hourind === "-" + ind5) {
+        //   newValue = "0" + ind5;
+        // }
         if (parseInt(newValue) > 59) {
           newValue = "00";
         } else if (parseInt(newValue) < 10) {
@@ -478,6 +551,12 @@ debugger
         if (secondind === "--") {
           newValue = "0";
         }
+        // if (secondind === ind7 + "-") {
+        //   newValue = ind7 + "0";
+        // }
+        // if (secondind === "-" + ind8) {
+        //   newValue = "0" + ind8;
+        // }
         if (parseInt(newValue) > 59) {
           newValue = "00";
         } else if (parseInt(newValue) < 10) {
@@ -569,18 +648,18 @@ debugger
             newValue = "0" + newValue;
           }
         }
-        const afterHourind =
+        const afterHourIndex =
           ind3 + ind4 + ind5 + ind6 + ind7 + ind8 + ind9 + ind10 + ind11;
-        const hour = newValue.toString() + afterHourind;
+        const hour = newValue.toString() + afterHourIndex;
         this.value = hour;
       }
       // minute
       if (this.cursorPosition >= 3 && this.cursorPosition <= 5) {
-        const hourind = ind4 + ind5;
-        const newHour = +hourind - 1;
+        const minuteind = ind4 + ind5;
+        const newMinute = +minuteind - 1;
 
-        newValue = newHour.toString();
-        if (hourind === "--") {
+        newValue = newMinute.toString();
+        if (minuteind === "--") {
           newValue = "0";
         }
         if (parseInt(newValue) < 0) {
@@ -588,19 +667,19 @@ debugger
         } else if (parseInt(newValue) < 10) {
           newValue = "0" + newValue;
         }
-        const beforeHourind = ind1 + ind2 + ind3;
-        const afterHourind = ind6 + ind7 + ind8 + ind9 + ind10 + ind11;
-        const minute = beforeHourind + newValue.toString() + afterHourind;
+        const beforeMinuteIndex = ind1 + ind2 + ind3;
+        const afterMinuteIndex = ind6 + ind7 + ind8 + ind9 + ind10 + ind11;
+        const minute = beforeMinuteIndex + newValue.toString() + afterMinuteIndex;
         this.value = minute;
       }
 
       // second
       if (this.cursorPosition >= 6 && this.cursorPosition <= 8) {
-        const hourind = ind7 + ind8;
-        const newHour = +hourind - 1;
+        const secondIndex = ind7 + ind8;
+        const newSecond = +secondIndex - 1;
 
-        newValue = newHour.toString();
-        if (hourind === "--") {
+        newValue = newSecond.toString();
+        if (secondIndex === "--") {
           newValue = "0";
         }
         if (parseInt(newValue) < 0) {
@@ -608,9 +687,9 @@ debugger
         } else if (parseInt(newValue) < 10) {
           newValue = "0" + newValue;
         }
-        const beforeHourind = ind1 + ind2 + ind3 + ind4 + ind5 + ind6;
-        const afterHourind = ind9 + ind10 + ind11;
-        const second = beforeHourind + newValue.toString() + afterHourind;
+        const beforesecondIndex = ind1 + ind2 + ind3 + ind4 + ind5 + ind6;
+        const aftersecondIndex = ind9 + ind10 + ind11;
+        const second = beforesecondIndex + newValue.toString() + aftersecondIndex;
         this.value = second;
       }
 
@@ -664,8 +743,7 @@ debugger
     }
 
     if (event.which === 38 || event.which === 40) {
-      document.getElementById("timePickerValue").style.caretColor =
-        "transparent";
+      this.input.nativeElement.style.caretColor = "transparent";
       event.preventDefault();
       event.stopPropagation();
       return false;
@@ -680,7 +758,6 @@ debugger
       this.input.nativeElement.selectionStart ||
       this.input.nativeElement.selectionStart === 0
     ) {
-      
       this.cursorPosition = this.input.nativeElement.selectionStart;
     }
   }
@@ -707,7 +784,6 @@ debugger
   }
 
   setCaret() {
-    const getElement = document.getElementById("timePickerValue");
-    this.setCaretPosition(getElement, this.cursorPosition);
+    this.setCaretPosition(this.input.nativeElement, this.cursorPosition);
   }
 }
