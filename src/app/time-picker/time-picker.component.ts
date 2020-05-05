@@ -14,43 +14,13 @@ export class TimePickerComponent implements OnInit {
   @Input()
   timeType: any;
 
-  HhMmSs: any = [
-    /[0-2]/,
-    /[0-9]/,
-    ":",
-    /[0-5]/,
-    /[0-9]/,
-    ":",
-    /[0-5]/,
-    /[0-9]/,
-  ];
+  HhMmSs: any = [/[0-2]/, /[0-9]/, ":", /[0-5]/, /[0-9]/, ":", /[0-5]/, /[0-9]/];
   HhMm: any = [/[0-2]/, /[0-9]/, ":", /[0-5]/, /[0-9]/];
   Hh: any = [/[0-2]/, /[0-9]/];
-  hhMmSs: any = [
-    /[0-1]/,
-    /[0-9]/,
-    ":",
-    /[0-5]/,
-    /[0-9]/,
-    ":",
-    /[0-5]/,
-    /[0-9]/,
-  ];
+  hhMmSs: any = [/[0-1]/, /[0-9]/, ":", /[0-5]/, /[0-9]/, ":", /[0-5]/, /[0-9]/];
   hhMm: any = [/[0-1]/, /[0-9]/, ":", /[0-5]/, /[0-9]/];
   hh: any = [/[0-1]/, /[0-9]/];
-  hhMmSsAM: any = [
-    /[0-1]/,
-    /[0-9]/,
-    ":",
-    /[0-5]/,
-    /[0-9]/,
-    ":",
-    /[0-5]/,
-    /[0-9]/,
-    " ",
-    /[a|p]/,
-    "m",
-  ];
+  hhMmSsAM: any = [/[0-1]/, /[0-9]/, ":", /[0-5]/, /[0-9]/, ":", /[0-5]/, /[0-9]/, " ", /[a|p]/, "m"];
   hhMmAM: any = [/[0-1]/, /[0-9]/, ":", /[0-5]/, /[0-9]/, " ", /[a|p]/, "m"];
   hhAM: any = [/[0-1]/, /[0-9]/, " ", /[a|p]/, "m"];
 
@@ -445,6 +415,7 @@ export class TimePickerComponent implements OnInit {
 
       if (this.value.length <= 0) {
         this.cursorPosition = 0;
+        console.log(this.cursorPosition, "a");
       } else {
         this.cursorPosition -= 1;
       }
@@ -493,12 +464,12 @@ export class TimePickerComponent implements OnInit {
           if (hourind === "--") {
             newValue = "0";
           }
-          // if (hourind === ind1 + "-") {
-          //   newValue = ind1 + "0";
-          // }
-          // if (hourind === "-" + ind2) {
-          //   newValue = "0" + ind2;
-          // }
+          if (ind1 !== "-" && hourind === ind1 + "-") {
+            newValue =  "0";
+          }
+          if (ind2 !== "-" && hourind === "-" + ind2) {
+            newValue = "0";
+          }
           if (parseInt(newValue) > 12) {
             newValue = "01";
           } else if (parseInt(newValue) < 10) {
@@ -525,12 +496,12 @@ export class TimePickerComponent implements OnInit {
         if (hourind === "--") {
           newValue = "0";
         }
-        // if (hourind === ind4 + "-") {
-        //   newValue = ind4 + "0";
-        // }
-        // if (hourind === "-" + ind5) {
-        //   newValue = "0" + ind5;
-        // }
+        if (ind4 !== "-" && hourind === ind4 + "-") {
+          newValue = "0";
+        }
+        if (ind5 !== "-" && hourind === "-" + ind5) {
+          newValue = "0";
+        }
         if (parseInt(newValue) > 59) {
           newValue = "00";
         } else if (parseInt(newValue) < 10) {
@@ -551,12 +522,12 @@ export class TimePickerComponent implements OnInit {
         if (secondind === "--") {
           newValue = "0";
         }
-        // if (secondind === ind7 + "-") {
-        //   newValue = ind7 + "0";
-        // }
-        // if (secondind === "-" + ind8) {
-        //   newValue = "0" + ind8;
-        // }
+        if (ind7 !== "-" && secondind === ind7 + "-") {
+          newValue = "0";
+        }
+        if (ind8 !== "-" && secondind === "-" + ind8) {
+          newValue = "0";
+        }
         if (parseInt(newValue) > 59) {
           newValue = "00";
         } else if (parseInt(newValue) < 10) {
