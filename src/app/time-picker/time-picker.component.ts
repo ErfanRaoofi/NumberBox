@@ -159,7 +159,6 @@ export class TimePickerComponent implements OnInit {
 
   cursorPosition: number = 0;
 
-  @Input() intStep: number = 1;
   constructor() {}
 
   ngOnInit(): void {
@@ -476,6 +475,15 @@ export class TimePickerComponent implements OnInit {
             newValue = "0" + newValue;
           }
         } else {
+          if (hourind === "--") {
+            newValue = "0";
+          }
+          if (ind1 !== "-" && hourind === ind1 + "-") {
+            newValue =  "0";
+          }
+          if (ind2 !== "-" && hourind === "-" + ind2) {
+            newValue = "0";
+          }
           if (parseInt(newValue) > 23) {
             newValue = "00";
           } else if (parseInt(newValue) < 10) {
@@ -607,12 +615,27 @@ export class TimePickerComponent implements OnInit {
           if (hourind === "--") {
             newValue = "0";
           }
+          if (ind1 !== "-" && hourind === ind1 + "-") {
+            newValue =  "0";
+          }
+          if (ind2 !== "-" && hourind === "-" + ind2) {
+            newValue = "0";
+          }
           if (parseInt(newValue) < 1) {
             newValue = "12";
           } else if (parseInt(newValue) < 10) {
             newValue = "0" + newValue;
           }
         } else {
+          if (hourind === "--") {
+            newValue = "0";
+          }
+          if (ind1 !== "-" && hourind === ind1 + "-") {
+            newValue =  "0";
+          }
+          if (ind2 !== "-" && hourind === "-" + ind2) {
+            newValue = "0";
+          }
           if (parseInt(newValue) < 0) {
             newValue = "23";
           } else if (parseInt(newValue) < 10) {
@@ -633,6 +656,15 @@ export class TimePickerComponent implements OnInit {
         if (minuteind === "--") {
           newValue = "0";
         }
+        if (ind4 !== "-" && minuteind === ind4 + "-") {
+          newValue = "0";
+        }
+        if (ind5 !== "-" && minuteind === "-" + ind5) {
+          newValue = "0";
+        }
+        if (minuteind === "--") {
+          newValue = "0";
+        }
         if (parseInt(newValue) < 0) {
           newValue = "59";
         } else if (parseInt(newValue) < 10) {
@@ -650,6 +682,15 @@ export class TimePickerComponent implements OnInit {
         const newSecond = +secondIndex - 1;
 
         newValue = newSecond.toString();
+        if (secondIndex === "--") {
+          newValue = "0";
+        }
+        if (ind7 !== "-" && secondIndex === ind7 + "-") {
+          newValue = "0";
+        }
+        if (ind8 !== "-" && secondIndex === "-" + ind8) {
+          newValue = "0";
+        }
         if (secondIndex === "--") {
           newValue = "0";
         }
