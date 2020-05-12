@@ -1,4 +1,15 @@
-<input #input id='NumberBoxValue' [(ngModel)]="value" type="text" (keypress)="handleKeyPress($event)" (ngModelChange)="this.userQuestionUpdate.next($event)" (keydown)="handleKeyDown($event)" (click)="handleClick()" (keyup)="handleKeyUp($event)">
+<div class="con">
+    <div class="input">
+        <input #input id='NumberBoxValue' [(ngModel)]="value" type="text" (keypress)="handleKeyPress($event)" (ngModelChange)="this.userQuestionUpdate.next($event)" (keydown)="handleKeyDown($event)" (click)="handleClick()" (keyup)="handleKeyUp($event)">
+    </div>
+    <div >
+        <div (click)="handleUpButton($event)" class="up">
+        <i class="fas fa-chevron-up"></i>
+    </div>
+    <div (click)="handleDownButton($event)" class="down">
+        <i class="fas fa-chevron-down"></i>
+    </div>
+    </div>
+</div>
 
-<button (click)="handleUpButton()">up</button>
-<button (click)="handleDownButton()">down</button>
+

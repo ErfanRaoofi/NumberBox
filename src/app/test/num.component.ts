@@ -12,6 +12,7 @@ import { ThrowStmt } from "@angular/compiler";
 @Component({
   selector: "app-num",
   templateUrl: "./num.component.html",
+  styleUrls: ['./num.component.scss']
 })
 export class NumComponent {
   @ViewChild("input") input: ElementRef<HTMLInputElement>;
@@ -400,11 +401,11 @@ export class NumComponent {
     }
   }
 
-  handleUpButton() {
+  handleUpButton(e) {
     this.upStepHandel();
   }
 
-  handleDownButton() {
+  handleDownButton(e) {
     this.downStepHandel();
   }
 

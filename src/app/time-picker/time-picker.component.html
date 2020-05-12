@@ -1,1 +1,1 @@
-<input #input id="timePickerValue" [textMask]="timeType" type="text" [(ngModel)]="value" (keypress)='handleKeyPress($event)' (keyup)="handleKeyUp($event)" (keydown)="handleKeyDown($event)" (click)="handleClick($event)">
+<input #input [textMask]="timeType" type="text" [(ngModel)]="value" (keypress)='handleKeyPress($event)' (keyup)="handleKeyUp($event)" (keydown)="handleKeyDown($event)" (click)="handleClick($event)">
